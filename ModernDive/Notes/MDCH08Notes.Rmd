@@ -1,0 +1,165 @@
+---
+title: 'Notes for MDCH08: Bootstrapping and Confidence Intervals Notes'
+author: 'Author: YOUR NAME HERE'
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+
+***
+
+### Modern Dive Chapter 8: Bootstrapping and Confidence Intervals
+
+#### Introduction
+
+In Chapter 7, we studied sampling. We started with a “tactile” exercise where we wanted to know the proportion of balls in the sampling bowl in Figure 7.1 that are red. While we could have performed an exhaustive count, this would have been a tedious process. So instead, we used a shovel to extract a sample of 50 balls and used the resulting proportion that were red as an estimate. Furthermore, we made sure to mix the bowl’s contents before every use of the shovel. Because of the randomness created by the mixing, different uses of the shovel yielded different proportions red and hence different estimates of the proportion of the bowl’s balls that are red.
+
+We then mimicked this “tactile” sampling exercise with an equivalent “virtual” sampling exercise performed on the computer. Using our computer’s random number generator, we quickly mimicked the above sampling procedure a large number of times. In Subsection 7.2.4, we quickly repeated this sampling procedure 1000 times, using three different “virtual” shovels with 25, 50, and 100 slots. We visualized these three sets of 1000 estimates in Figure 7.15 and saw that as the sample size increased, the variation in the estimates decreased.
+
+In doing so, what we did was construct *sampling distributions*. The motivation for taking 1000 repeated samples and visualizing the resulting estimates was to study how these estimates varied from one sample to another; in other words, we wanted to study the effect of *sampling variation*. We quantified the variation of these estimates using their standard deviation, which has a special name: the *standard error*. In particular, we saw that as the sample size increased from 25 to 50 to 100, the standard error decreased and thus the sampling distributions narrowed. Larger sample sizes led to more precise estimates that varied less around the center.
+
+We then tied these sampling exercises to terminology and mathematical notation related to sampling in Subsection 7.3.1. Our *study population* was the large bowl with $N$ = 2400 balls, while the *population parameter*, the unknown quantity of interest, was the population proportion $\hat{p}$ of the bowl’s balls that were red. Since performing a census would be expensive in terms of time and energy, we instead extracted a *sample* of size $n$ = 50. The *point estimate*, also known as a *sample statistic*, used to estimate $p$ was the sample proportion $\hat{p}$ of these 50 sampled balls that were red. Furthermore, since the sample was obtained at random, it can be considered as *unbiased* and *representative* of the population. Thus any results based on the sample could be *generalized* to the population. Therefore, the proportion of the shovel’s balls that were red was a “good guess” of the proportion of the bowl’s balls that are red. In other words, we used the sample to *infer* about the population.
+
+However, as described in Section 7.2, both the tactile and virtual sampling exercises are not what one would do in real life; this was merely an activity used to study the effects of sampling variation. In a real-life situation, we would not take 1000 samples of size $n$, but rather take a *single* representative sample that’s as large as possible. Additionally, we knew that the true proportion of the bowl’s balls that were red was 37.5%. In a real-life situation, we will not know what this value is. Because if we did, then why would we take a sample to estimate it?
+
+An example of a realistic sampling situation would be a poll, like the Obama poll you saw in Section 7.4. Pollsters did not know the true proportion of *all* young Americans who supported President Obama in 2013, and thus they took a single sample of size $n$ = 2089 young Americans to estimate this value.
+
+So how does one quantify the effects of sampling variation when you only have a *single sample* to work with? You cannot directly study the effects of sampling variation when you only have one sample. One common method to study this is *bootstrapping resampling*, which will be the focus of the earlier sections of this chapter.
+
+Furthermore, what if we would like not only a single estimate of the unknown population parameter, but also a range of *highly plausible* values? Going back to the Obama poll article, it stated that the pollsters’ estimate of the proportion of all young Americans who supported President Obama was 41%. But in addition it stated that the poll’s “margin of error was plus or minus 2.1 percentage points.” This “plausible range” was [41% - 2.1%, 41% + 2.1%] = [38.9%, 43.1%]. This range of plausible values is what’s known as a *confidence interval*, which will be the focus of the later sections of this chapter.
+
+#### Chapter Link
+
+Go to [Modern Dive Chapter 8: Bootstrapping and Confidence Intervals](https://moderndive.com/8-confidence-intervals.html).
+
+### Needed Packages
+
+```{r}
+
+```
+
+
+### 8.1 Pennies activity
+
+
+#### 8.1.1 What is the average year on US pennies in 2019?
+
+
+#### 8.1.2 Resampling once
+
+
+#### 8.1.3 Resampling 35 times
+
+
+#### 8.1.4 What did we just do?
+
+
+### 8.2 Computer simulation of resampling
+
+
+#### 8.2.1 Virtually resampling once
+
+
+#### 8.2.2 Virtually resampling 35 times
+
+
+#### 8.2.3 Virtually resampling 1000 times
+
+
+### 8.3 Understanding confidence intervals
+
+
+#### 8.3.1 Percentile method 
+
+
+#### 8.3.2 Standard error method
+
+
+### 8.4 Constructing confidence intervals
+
+
+#### 8.4.1 Original workflow
+
+
+#### 8.4.2 infer package workflow
+
+
+#### 8.4.3 Percentile method with `infer`
+
+
+#### 8.4.4 Standard error method with `infer`
+
+
+### 8.5 Interpreting confidence intervals
+
+
+#### 8.5.1 Did the net capture the fish?
+
+
+#### 8.5.2 Precise and shorthand interpretation
+
+
+#### 8.5.3 Width of confidence intervals
+
+
+### 8.6 Case study: Is yawning contagious?
+
+
+#### 8.6.1 *Mythbusters* study data
+
+
+#### 8.6.2 Sampling scenario
+
+
+#### 8.6.3 Constructing the confidence interval
+
+
+#### 8.6.4 Interpreting the confidence interval
+
+
+### 8.7 Conclusion
+
+
+#### 8.7.1 Comparing bootstrap and sampling distributions
+
+
+#### 8.7.2 Theory-based confidence intervals
+
+
+#### 8.7.3 Additional resources
+
+
+#### 8.7.4 What’s to come?
+
+
+### Learning Check
+
+<p style="background-color:#9ED3AD; padding: 5px;">**Learning Check Questions**</p>
+
+**(LC8.1)** What is the chief difference between a bootstrap distribution and a sampling distribution?
+
+
+**(LC8.2)** Looking at the bootstrap distribution for the sample mean in Figure 8.14, between what two values would you say *most* values lie?
+
+
+**(LC8.3)** What condition about the bootstrap distribution must be met for us to be able to construct confidence intervals using the standard error method?
+
+
+**(LC8.4)** Say we wanted to construct a 68% confidence interval instead of a 95% confidence interval for $\mu$. Describe what changes are needed to make this happen. Hint: we suggest you look at Appendix A.2 on the normal distribution.
+
+
+**(LC8.5)** Construct a 95% confidence interval for the median year of minting of all US pennies. Use the percentile method and, if appropriate, then use the standard-error method.
+
+
+***
+```{r}
+sessionInfo()
+```

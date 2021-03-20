@@ -1,0 +1,227 @@
+---
+title: 'MDCH02 Data Visualization Notes'
+author: 'Author: YOUR NAME HERE'
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+
+***
+
+### Packages
+
+```{r}
+
+```
+
+### 2.1 The grammar of graphics
+
+
+### 2.2 Five named graphs - the 5NG
+
+
+### 2.3 5NG#1: Scatterplots
+
+
+#### 2.3.1 Scatterplots via `geom_point`
+
+
+#### 2.3.2 Overplotting
+
+
+#### 2.3.3 Summary
+
+
+### 2.4 5NG#2: Linegraphs
+
+
+#### 2.4.1 Linegraphs via `geom_line`
+
+
+#### 2.4.2 Summary
+
+
+### 2.5 5NG#3: Histograms
+
+
+#### 2.5.1 Histograms via `geom_histogram`
+
+
+#### 2.5.2 Adjusting the bins
+
+
+#### 2.5.3 Summary
+
+
+### 2.6 Facets
+
+
+### 2.7 5NG#4: Boxplots
+
+
+#### 2.7.1 Boxplots via `geom_boxplot`
+
+
+#### 2.7.2 Summary
+
+
+### 2.8 5NG#5: Barplots
+
+
+#### 2.8.1 Barplots via `geom_bar` or `geom_col`
+
+
+#### 2.8.2 Must avoid pie charts!
+
+
+#### 2.8.3 Two categorical variables
+
+
+#### 2.8.4 Summary
+
+
+### 2.9 Conclusion 
+
+
+#### 2.9.1 Summary table
+
+
+#### 2.9.2 Function argument specification
+
+
+#### 2.9.3 Additional resources
+
+
+#### 2.9.4 What’s to come
+
+
+### Learning Check
+
+<p style="background-color:#9ED3AD; padding: 5px;">**Learning Check Questions**</p>
+
+Note: For the purposes of your R Markdown notes and compiling to HTML, the `glimpse()` function is more useful than the `View()` function for exploring datasets.
+
+
+**(LC2.1)** Take a look at both the `flights` and `alaska_flights` data frames by running `View(flights)` and `View(alaska_flights)`. In what respect do these data frames differ? For example, think about the number of rows in each dataset.
+
+
+**(LC2.2)** What are some practical reasons why `dep_delay` and `arr_delay` have a positive relationship?
+
+
+**(LC2.3)** What variables in the weather data frame would you expect to have a negative correlation (i.e., a negative relationship) with `dep_delay`? Why? Remember that we are focusing on numerical variables here. Hint: Explore the `weather` dataset by using the `View()` function.
+
+
+**(LC2.4)** Why do you believe there is a cluster of points near (0, 0)? What does (0, 0) correspond to in terms of the Alaska Air flights?
+
+
+**(LC2.5)** What are some other features of the plot that stand out to you?
+
+
+**(LC2.6)** Create a new scatterplot using different variables in the `alaska_flights` data frame by modifying the example given.
+
+
+**(LC2.7)** Why is setting the `alpha` argument value useful with scatterplots? What further information does it give you that a regular scatterplot cannot?
+
+
+**(LC2.8)** After viewing Figure 2.4, give an approximate range of arrival delays and departure delays that occur most frequently. How has that region changed compared to when you observed the same plot without `alpha = 0.2` set in Figure 2.2?
+
+
+**(LC2.9)** Take a look at both the `weather` and `early_january_weather` data frames by running `View(weather)` and `View(early_january_weather)`. In what respect do these data frames differ?
+
+
+**(LC2.10)** `View()` the `flights` data frame again. Why does the `time_hour` variable uniquely identify the hour of the measurement, whereas the `hour` variable does not?
+
+
+**(LC2.11)** Why should linegraphs be avoided when there is not a clear ordering of the horizontal axis?
+
+
+**(LC2.12)** Why are linegraphs frequently used when time is the explanatory variable on the x-axis?
+
+
+**(LC2.13)** Plot a time series of a variable other than `temp` for Newark Airport in the first 15 days of January 2013.
+
+
+**(LC2.14)** What does changing the number of bins from 30 to 40 tell us about the distribution of temperatures?
+
+
+**(LC2.15)** Would you classify the distribution of temperatures as symmetric or skewed in one direction or another?
+
+
+**(LC2.16)** What would you guess is the “center” value in this distribution? Why did you make that choice?
+
+
+**(LC2.17)** Is this data spread out greatly from the center or is it close? Why?
+
+
+**(LC2.18)** What other things do you notice about this faceted plot? How does a faceted plot help us see relationships between two variables?
+
+
+**(LC2.19)** What do the numbers 1-12 correspond to in the plot? What about 25, 50, 75, 100?
+
+
+**(LC2.20)** For which types of datasets would faceted plots not work well in comparing relationships between variables? Give an example describing the nature of these variables and other important characteristics.
+
+
+**(LC2.21)** Does the `temp` variable in the weather dataset have a lot of variability? Why do you say that?
+
+
+**(LC2.22)** What does the dot at the bottom of the plot for May correspond to? Explain what might have occurred in May to produce this point.
+
+
+**(LC2.23)** Which months have the highest variability in temperature? What reasons can you give for this?
+
+
+**(LC2.24)** We looked at the distribution of the numerical variable `temp` split by the numerical variable `month` that we converted using the `factor()` function in order to make a side-by-side boxplot. Why would a boxplot of `temp` split by the numerical variable `pressure` similarly converted to a categorical variable using the `factor()` not be informative?
+
+
+**(LC2.25)** Boxplots provide a simple way to identify outliers. Why may outliers be easier to identify when looking at a boxplot instead of a faceted histogram?
+
+
+**(LC2.26)** Why are histograms inappropriate for categorical variables?
+
+
+**(LC2.27)** What is the difference between histograms and barplots?
+
+
+**(LC2.28)** How many Envoy Air flights departed NYC in 2013?
+
+
+**(LC2.29)** What was the 7th highest airline for departed flights from NYC in 2013? How could we better present the table to get this answer quickly?
+
+
+**(LC2.30)** Why should pie charts be avoided and replaced by barplots?
+
+
+**(LC2.31)** Why do you think people continue to use pie charts?
+
+
+**(LC2.32)** What kinds of questions are not easily answered by looking at Figure 2.23?
+
+
+**(LC2.33)** What can you say, if anything, about the relationship between airline and airport in NYC in 2013 in regards to the number of departing flights?
+
+
+**(LC2.34)** Why might the side-by-side barplot be preferable to a stacked barplot in this case?
+
+
+**(LC2.35)** What are the disadvantages of using a dodged barplot, in general?
+
+
+**(LC2.36)** Why is the faceted barplot preferred to the side-by-side and stacked barplots in this case?
+
+
+**(LC2.37)** What information about the different carriers at different airports is more easily seen in the faceted barplot?
+
+
+***
+```{r}
+sessionInfo()
+```

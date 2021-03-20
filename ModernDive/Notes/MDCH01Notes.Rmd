@@ -1,0 +1,95 @@
+---
+title: 'MDCH01 Getting Started with Data in R Notes'
+author: 'Author: Jill E. Thomley'
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+
+***
+
+### 1.1 What are R and RStudio?
+
+
+#### 1.1.1 Installing R and RStudio
+
+
+#### 1.1.2 Using R via RStudio
+
+
+### 1.2 How do I code in R?
+
+
+#### 1.2.1 Basic programming concepts and terminology
+
+
+#### 1.2.2 Errors, warnings, and messages
+
+
+#### 1.2.3 Tips on learning to code
+
+
+### 1.3 What are R packages?
+
+
+#### 1.3.1 Package installation
+
+
+#### 1.3.2 Package loading
+
+
+#### 1.3.3 Package use
+
+
+### 1.4 Explore your first datasets
+
+
+#### 1.4.1 `nycflights13` package
+
+
+#### 1.4.2 `flights` data frame
+
+
+#### 1.4.3 Exploring data frames
+
+
+##### 1. `View()`:
+
+
+##### 2. `glimpse()`:
+
+
+##### 3. `kable()`:
+
+
+##### 4. `$ operator`
+
+
+#### 1.4.4 Identification and measurement variables
+
+
+### 1.5 Conclusion
+
+
+#### 1.5.1 Additional resources
+
+
+#### 1.5.2 What’s to come?
+
+```{r echo=FALSE, fig.align="center", fig.cap="Figure: ***ModernDive*** flowchart", out.width='600'}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/e2b1188b9fa58a3e382c04748e8b278b36f43b84/44a53/images/flowcharts/flowchart/flowchart.004.png")
+```
+
+
+***
+```{r}
+sessionInfo()
+```

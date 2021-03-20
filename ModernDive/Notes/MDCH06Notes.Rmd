@@ -1,0 +1,89 @@
+---
+title: 'MDCH06 Multiple Regression Notes'
+author: 'Author: YOUR NAME HERE'
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+
+***
+
+### Packages
+
+```{r}
+
+```
+
+### 6.1 One numerical and one categorical explanatory variable
+
+
+#### 6.1.1 Exploratory data analysis
+
+
+#### 6.1.2 Interaction model
+
+
+#### 6.1.3 Parallel slopes model
+
+
+#### 6.1.4 Observed/fitted values and residuals
+
+
+### 6.2 Two numerical explanatory variables
+
+
+#### 6.2.1 Exploratory data analysis
+
+
+#### 6.2.2 Regression plane
+
+
+#### 6.2.3 Observed/fitted values and residuals
+
+
+### 6.3 Related topics
+
+
+#### 6.3.1 Model selection
+
+
+#### 6.3.2 Correlation coefficient
+
+
+#### 6.3.3 Simpson’s Paradox
+
+
+### 6.4 Conclusion
+
+
+#### 6.4.1 Additional resources
+
+
+#### 6.4.2 What’s to come?
+
+
+### Learning Check
+
+<p style="background-color:#9ED3AD; padding: 5px;">**Learning Check Questions**</p>
+
+**(LC6.1)** (LC6.1) Compute the observed values, fitted values, and residuals not for the interaction model as we just did, but rather for the parallel slopes model we saved in `score_model_parallel_slopes`.
+
+
+**(LC6.2)** Conduct a new exploratory data analysis with the same outcome variable $y$ `debt` but with `credit_rating` and `age` as the new explanatory variables $x_1$ and $x_2$. What can you say about the relationship between a credit card holder’s debt and their credit rating and age?
+
+
+**(LC6.3)** Fit a new simple linear regression using `lm(debt ~ credit_rating + age, data = credit_ch6)` where `credit_rating` and `age` are the new numerical explanatory variables$x_1$ and $x_2$. Get information about the “best-fitting” regression plane from the regression table by applying the `get_regression_table()` function. How do the regression results match up with the results from your previous exploratory data analysis?
+
+
+***
+```{r}
+sessionInfo()
+```

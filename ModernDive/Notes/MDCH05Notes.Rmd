@@ -1,0 +1,113 @@
+---
+title: 'MDCH05 Basic Regression Notes'
+author: 'Author: YOUR NAME HERE'
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+
+***
+
+### Packages
+
+
+### 5.1 One numerical explanatory variable
+
+
+#### 5.1.1 Exploratory data analysis
+
+
+#### 5.1.2 Simple linear regression
+
+
+#### 5.1.3 Observed/fitted values and residuals
+
+
+### 5.2 One categorical explanatory variable
+
+
+#### 5.2.1 Exploratory data analysis
+
+
+#### 5.2.2 Linear regression
+
+
+#### 5.2.3 Observed/fitted values and residuals
+
+
+### 5.3 Related topics
+
+
+#### 5.3.1 Correlation is not necessarily causation
+
+
+#### 5.3.2 Best-fitting line
+
+
+#### 5.3.3 `get_regression_x()` functions
+
+
+### 5.4 Conclusion
+
+
+#### 5.4.1 Additional resources
+
+
+#### 5.4.2 What’s to come?
+
+
+### Learning Check
+
+<p style="background-color:#9ED3AD; padding: 5px;">**Learning Check Questions**</p>
+
+**(LC5.1)** Conduct a new exploratory data analysis with the same outcome variable $y$ being `score` but with `age` as the new explanatory variable $x$. Remember, this involves three things:
+
+a) Looking at the raw data values.
+b) Computing summary statistics.
+c) Creating data visualizations.
+
+What can you say about the relationship between age and teaching scores based on this exploration?
+
+
+**(LC5.2)** Fit a new simple linear regression using `lm(score ~ age, data = evals_ch5)` where `age` is the new explanatory variable $x$. Get information about the “best-fitting” line from the regression table by applying the `get_regression_table()` function. How do the regression results match up with the results from your earlier exploratory data analysis?
+
+**(LC5.3)** Generate a data frame of the residuals of the model where you used age as the explanatory $x$ variable.
+
+
+**(LC5.4)** Conduct a new exploratory data analysis with the same explanatory variable $x$ being `continent` but with `gdpPercap` as the new outcome variable $y$. What can you say about the differences in GDP per capita between continents based on this exploration?
+
+
+**(LC5.5)** Fit a new linear regression using `lm(gdpPercap ~ continent, data = gapminder2007)` where `gdpPercap` is the new outcome variable $y$. Get information about the “best-fitting” line from the regression table by applying the `get_regression_table()` function. How do the regression results match up with the results from your previous exploratory data analysis?
+
+
+**(LC5.6)** Using either the sorting functionality of RStudio’s spreadsheet viewer or using the data wrangling tools you learned in Chapter 3, identify the five countries with the five smallest (most negative) residuals? What do these negative residuals say about their life expectancy relative to their continents’ life expectancy?
+
+
+**(LC5.7)** Repeat this process, but identify the five countries with the five largest (most positive) residuals. What do these positive residuals say about their life expectancy relative to their continents’ life expectancy?
+
+
+**(LC5.8)** Note in Figure 5.13 there are 3 points marked with dots and:
+
+* The “best” fitting solid regression line in blue
+* An arbitrarily chosen dotted red line
+* Another arbitrarily chosen dashed green line
+
+```{r echo=FALSE, fig.align="center", fig.cap="FIGURE 5.13: Regression line and two others", out.width='600'}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/c2e0692954c635f5898b0f49121f6fedbe1e53c4/0f389/moderndive_files/figure-html/three-lines-1.png")
+```
+
+Compute the sum of squared residuals by hand for each line and show that of these three lines, the regression line in blue has the smallest value.
+
+
+***
+```{r}
+sessionInfo()
+```
