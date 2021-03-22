@@ -1,0 +1,95 @@
+---
+title: 'Notes for DataCamp: Sampling in R'
+author: 'Author: YOUR NAME HERE'
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+
+***
+
+### Modern Dive Chapter 8: Bootstrapping and Confidence Intervals
+
+#### Course Description
+
+Sampling is a cornerstone of inference statistics and hypothesis testing. It's tremendously important in survey analysis and experimental design. This course explains when and why sampling is important, teaches you how to perform common types of sampling, from simple random sampling to more complex methods like stratified and cluster sampling. Later, the course covers estimating population statistics, and quantifying uncertainty in your estimates by generating sampling distributions and bootstrap distributions. Throughout the course, you'll explore real-world datasets on coffee ratings, Spotify songs, and employee attrition.
+
+#### Course Link
+
+Go to [Sampling in R](https://learn.datacamp.com/courses/sampling-in-r).
+
+### Packages Used
+
+```{r}
+library(tidyverse)
+library(curl)
+library(fst)
+```
+
+### Datasets Used
+
+#### Spotify Song Data
+
+Brief Description:
+
+```{r}
+tmp_file_1 <- tempfile()
+fst_url_1 <- "https://assets.datacamp.com/production/repositories/5761/datasets/1496fc7387dda2feccc149d1add0d9617f83b215/spotify_2000_2020.fst"
+curl_download(fst_url_1, tmp_file_1, mode = "wb")
+spotify_population <- read_fst(tmp_file_1)
+```
+
+#### Employee Attrition
+
+Brief Description:
+
+```{r}
+tmp_file_2 <- tempfile()
+fst_url_2 <- "https://assets.datacamp.com/production/repositories/5761/datasets/af764828631d4a02b8a8184e9a2c207d8abb0087/attrition.fst"
+curl_download(fst_url_2, tmp_file_2, mode = "wb")
+attrition_pop <- read_fst(tmp_file_2)
+```
+
+#### Coffee Ratings 
+
+Brief Description:
+
+```{r}
+tmp_file_3 <- tempfile()
+fst_url_3 <- "https://assets.datacamp.com/production/repositories/5761/datasets/ed301a815089861bb77056f101c873dbbfdb5210/coffee_ratings_full.fst"
+curl_download(fst_url_3, tmp_file_3, mode = "wb")
+coffee_ratings <- read_fst(tmp_file_3)
+```
+
+### Bias Any Stretch of the Imagination
+
+#### 
+
+
+### Don't Get Theory Eyed
+
+####
+
+
+### The n's Justify the Means
+
+####  
+
+
+### Pull Your Data Up by Its Bootstraps
+
+####
+
+
+***
+```{r}
+sessionInfo()
+```

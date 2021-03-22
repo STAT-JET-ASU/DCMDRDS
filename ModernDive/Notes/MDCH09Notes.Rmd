@@ -1,0 +1,211 @@
+---
+title: 'Notes for MDCH09: Hypothesis Testing'
+author: 'Author: YOUR NAME HERE'
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: true
+    toc_depth: 5
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+
+***
+
+### Modern Dive Chapter 9: Hypothesis Testing
+
+#### Introduction
+
+Now that we’ve studied confidence intervals in Chapter 8, let’s study another commonly used method for statistical inference: hypothesis testing. Hypothesis tests allow us to take a sample of data from a population and infer about the plausibility of competing hypotheses. For example, in the upcoming “promotions” activity in Section 9.1, you’ll study the data collected from a psychology study in the 1970s to investigate whether gender-based discrimination in promotion rates existed in the banking industry at the time of the study.
+
+The good news is we’ve already covered many of the necessary concepts to understand hypothesis testing in Chapters 7 and 8. We will expand further on these ideas here and also provide a general framework for understanding hypothesis tests. By understanding this general framework, you’ll be able to adapt it to many different scenarios.
+
+The same can be said for confidence intervals. There was one general framework that applies to all confidence intervals and the infer package was designed around this framework. While the specifics may change slightly for different types of confidence intervals, the general framework stays the same.
+
+We believe that this approach is much better for long-term learning than focusing on specific details for specific confidence intervals using theory-based approaches. As you’ll now see, we prefer this general framework for hypothesis tests as well.
+
+If you’d like more practice or you’re curious to see how this framework applies to different scenarios, you can find fully-worked out examples for many common hypothesis tests and their corresponding confidence intervals in Appendix B. We recommend that you carefully review these examples as they also cover how the general frameworks apply to traditional theory-based methods like the  
+t
+ -test and normal-theory confidence intervals. You’ll see there that these traditional methods are just approximations for the computer-based methods we’ve been focusing on. However, they also require conditions to be met for their results to be valid. Computer-based methods using randomization, simulation, and bootstrapping have much fewer restrictions. Furthermore, they help develop your computational thinking, which is one big reason they are emphasized throughout this book.
+
+#### Chapter Link
+
+Go to [Modern Dive Chapter 9: Hypothesis Testing](https://moderndive.com/9-hypothesis-testing.html).
+
+### Needed Packages
+
+```{r}
+
+```
+
+
+### 9.1 Promotions activity
+
+
+#### 9.1.1 Does gender affect promotions at a bank?
+
+
+#### 9.1.2 Shuffling once
+
+
+#### 9.1.3 Shuffling 16 times
+
+
+#### 9.1.4 What did we just do?
+
+
+### 9.2 Understanding hypothesis tests
+
+
+### 9.3 Conducting hypothesis tests
+
+
+#### 9.3.1 `infer` package workflow 
+
+
+##### 1. `specify` variables
+
+
+##### 2. `hypothesize` the null
+
+
+##### 3. `generate` replicates
+
+
+##### 4. `calculate` summary statistics
+
+
+##### 5. `visualize` the p-value
+
+
+#### 9.3.2 Comparison with confidence intervals
+
+
+### 9.4 Interpreting hypothesis tests
+
+
+#### 9.4.1 Two possible outcomes
+
+
+#### 9.4.2 Types of errors
+
+
+#### 9.4.3 How do we choose alpha?
+
+
+### 9.5 Case study: Are action or romance movies rated higher?
+
+
+#### 9.5.1 IMDb ratings data
+
+
+#### 9.5.2 Sampling scenario
+
+
+#### 9.5.3 Conducting the hypothesis test
+
+
+##### 1. `specify` variables
+
+
+##### 2. `hypothesize` the null
+
+
+##### 3. `generate` replicates
+
+
+##### 4. `calculate` summary statistics
+
+
+##### 5. `visualize` the p-value
+
+
+### 9.6 Conclusion
+
+
+#### 9.6.1 Theory-based hypothesis tests
+
+
+#### 9.6.2 When inference is not needed
+
+
+#### 9.6.3 Problems with p-values
+
+
+#### 9.6.4 Additional resources
+
+
+#### 9.6.5 What’s to come
+
+
+### Learning Check
+
+<p style="background-color:#9ED3AD; padding: 5px;">**Learning Check Questions**</p>
+
+**(LC9.1)** Why does the following code produce an error? In other words, what about the response and predictor variables make this not a possible computation with the `infer` package?
+
+```{r}
+# library(moderndive)
+# library(infer)
+# null_distribution_mean <- promotions %>%
+#   specify(formula = decision ~ gender, success = "promoted") %>% 
+#   hypothesize(null = "independence") %>% 
+#   generate(reps = 1000, type = "permute") %>% 
+#   calculate(stat = "diff in means", order = c("male", "female"))
+```
+
+
+**(LC9.2)** Why are we relatively confident that the distributions of the sample proportions will be good approximations of the population distributions of promotion proportions for the two genders?
+
+
+**(LC9.3)** Using the definition of p-value, write in words what the $p$-value represents for the hypothesis test comparing the promotion rates for males and females
+
+
+**(LC9.4)** Describe in a paragraph how we used Allen Downey’s diagram to conclude if a statistical difference existed between the promotion rate of males and females using this study.
+
+
+**(LC9.5)** What is wrong about saying, “The defendant is innocent.” based on the US system of criminal trials?
+
+
+**(LC9.6)** What is the purpose of hypothesis testing?
+
+
+**(LC9.7)** What are some flaws with hypothesis testing? How could we alleviate them?
+
+
+**(LC9.8)** Consider two $\alpha$ significance levels of 0.1 and 0.01. Of the two, which would lead to a more liberal hypothesis testing procedure? In other words, one that will, all things being equal, lead to more rejections of the null hypothesis $H_0$.
+
+
+**(LC9.9)** Conduct the same analysis comparing action movies versus romantic movies using the median rating instead of the mean rating. What was different and what was the same?
+
+
+**(LC9.10)** What conclusions can you make from viewing the faceted histogram looking at rating versus genre that you couldn’t see when looking at the boxplot?
+
+
+**(LC9.11)** Describe in a paragraph how we used Allen Downey’s diagram to conclude if a statistical difference existed between mean movie ratings for action and romance movies.
+
+
+**(LC9.12)** Why are we relatively confident that the distributions of the sample ratings will be good approximations of the population distributions of ratings for the two genres?
+
+
+**(LC9.13)** Using the definition of $p$-value, write in words what the $p$-value represents for the hypothesis test comparing the mean rating of romance to action movies.
+
+
+**(LC9.14)** What is the value of the $p$-value for the hypothesis test comparing the mean rating of romance to action movies?
+ 
+
+**(LC9.15)** Test your data wrangling knowledge and EDA skills:
+
+* Use `dplyr` and `tidyr` to create the necessary data frame focused on only action and romance movies (but not both) from the movies data frame in the `ggplot2movies` package.
+* Make a boxplot and a faceted histogram of this population data comparing ratings of action and romance movies from IMDb.
+* Discuss how these plots compare to the similar plots produced for the `movies_sample` data.
+
+
+***
+```{r}
+sessionInfo()
+```
