@@ -1,5 +1,5 @@
 ---
-title: "Binomial Distribution: Zener Card Activity"
+title: "MDCH07 Virtual Bowl Sampling Activity"
 subtitle: "Student Worksheet"
 author: "YOUR NAME HERE"
 date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
