@@ -173,19 +173,14 @@ Our 33 random samples are not very many if we are trying to understand the true 
 Adapt the code to take 1000 samples of size 50. Summarize the count and proportion of red balls in each sample and save it as the object `virtual_prop_red_1000`. 
 
 ```{r}
-virtual_prop_red_1000 <- bowl %>% 
-  rep_sample_n(size = 50, reps = 1000) %>% 
-  group_by(replicate) %>% 
-  mutate(is_red = (color == "red")) %>% 
-  summarize(num_red  = sum(is_red),
-            prop_red = mean(is_red)) 
 
-virtual_prop_red_1000 %>% 
-  summarize(mean_props = mean(prop_red),
-            sd_props = sd(prop_red))
 ```
 
 Compute the mean and standard deviation of the sample proportions in `virtual_prop_red_1000`.
+
+```{r}
+
+```
 
 
 ### Virtual Results #2
