@@ -30,6 +30,7 @@ Refer to "[
 
 ```{r}
 library(tidyverse)
+library(ggExtra)
 ```
 
 We need `tidyverse` for all our basic data manipulation. Recall that this includes `dplyr` and `ggplot`, among other packages in the `tidyverse` suite of tools.
@@ -49,7 +50,7 @@ We need `gridExtra` to arrange and display multiple plots.
 
 ## Our Population: The "Bowl"
 
-What proportion of the balls are red? We could count all of them (take a *census*), but that would be a long process.
+What proportion of the balls are red? We could count all of them (take a *census*), but that would be a long process ($N$ = 2400).
 
 ```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 7.1: A bowl filled with red and white balls.", out.width='600'}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/0868c64eb2998fbe3e3bfccf7ff55e746341baf3/eeab1/images/sampling/balls/sampling_bowl_1.jpg")
@@ -58,16 +59,27 @@ knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/0868c64eb2998fbe3
 
 ## Our Sample: The "Shovel"
 
-Instead of counting the entire population (*census*), we can select a random sample to use as an estimate.
+Instead of counting the entire population (*census*), we can select a random sample to use as an estimate ($n$ = 50 here).
 
 ```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 7.3: Removing 50 balls from the bowl.", out.width='600'}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/ee8292df457bd73d7a1a7d75c21be32d6e8659d6/30e62/images/sampling/balls/sampling_bowl_3_cropped.jpg")
 ```
 
 
+## What is the Distribution?
+
+If we were sampling *with replacement*---drawing one ball, noting its color, and putting it back before drawning another---we could model our sample with a binomial distribution. The parameter $p$ would be the true proportion of red balls. 
+
+However, we are sampling *without replacement* here. If we think of each slot on the "shovel" being filled sequentially, the color of the ball that fills each slot changes the color probabilities of the subsequent balls (*hypergeometric* distribution).
+
+Note: In real-world problems where sample size *n* is very small compared to the population size $N$, we  use the binomial model anyway when sampling without replacement. Why?
+
+
 ## Random Sampling
 
-Assuming there are more than 50 red balls and 50 white balls, when we take a random sample of 50 balls from the bowl we *could* get anywhere from 0 to 50 red balls (or a proportion of 0.00 = 0% to 1.00 = 100%). In other words, all proportions are *possible*. But are they all equally *probable*? Why or why not?
+Assuming there are more than 50 red balls and 50 white balls in the bowl, when we select a random sample of 50 balls we *could* get anywhere from 0 to 50 red balls. 
+
+That means all proportions from 0 = 0% to 1 = 100% are *possible*. But are they all equally *probable*? Why or why not?
 
 ```{r echo=FALSE, fig.align="center", out.width='300'}
 knitr::include_graphics("images/tap-to-speak.gif")
@@ -76,14 +88,15 @@ knitr::include_graphics("images/tap-to-speak.gif")
 
 ## Virtual Sampling
 
-We cannot physically replicate this experiment, but we can do so virtually. The `moderndive` package contains a virtual object `bowl` that represents the physical object. Scoop one `virtual_shovel` of balls using the following code.
+We cannot physically replicate this experiment, but we can do so virtually. The `moderndive` package contains a virtual object `bowl` that represents the physical object. 
+
+Scoop one `virtual_shovel` of balls using the following code.
 
 ```{r}
-virtual_shovel <- bowl %>% 
-  rep_sample_n(size = 50, reps = 1)
+virtual_shovel <- bowl %>% rep_sample_n(size = 50, reps = 1)
 ```
 
-The `rep_sample_n()` function is in package the `moderndive`.
+The `rep_sample_n()` function is from the package `infer` and is used by package `moderndive`.
 
     rep_sample_n(tbl, size, replace = FALSE, reps = 1, prob = NULL)
     
@@ -103,7 +116,7 @@ virtual_shovel %>%
 
 Note that the code is slightly different than the code found in Modern Dive, Chapter 7. This code is algebraically equivalent, but automatically works for sample sizes other than 50.  
 
-What if we wanted to calculate the proportion of white balls in the sample? How would you adapt the code?
+What if we wanted to calculate the proportion of white balls in the sample instead? How would you adapt the code?
 
 <p style = "text-align: center; color: red; font-weight: bold;">GIVE IT A TRY!</p>
 
@@ -134,9 +147,10 @@ class_plot <- ggplot(tactile_prop_red, aes(x = prop_red)) +
                      limits = c(0, 1)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
   labs(title = "Distribution of 33 Sample Proportions of Red Balls",
-       subtitle = "tactile sampling",
+       subtitle = "results of the tactile sample",
        x = "Proportion of Balls That Were Red (sample size n = 50)", 
-       y = "Frequency") +
+       y = "Frequency",
+       caption = "See also Figure 7.7 in Modern Dive") +
   theme_linedraw()
 class_plot
 ```
@@ -150,7 +164,7 @@ What seems like the most probable value for $p$ = proportion of red balls in the
 knitr::include_graphics("images/tap-to-speak.gif")
 ```
 
-(We *could* calculate it directly, but in most real-life scenarios we cannot. Exploring cases where the solution is known is how we develop reliable methods for unknown cases.)
+(We *could* calculate it directly from the `bowl` object, but in most real-life scenarios we cannot access the population---that is why we sample! Exploring cases where the solution is known is how we develop reliable methods for unknown cases.)
 
 
 ## Virtually Replicate the 33 Samples
@@ -173,19 +187,21 @@ virtual_prop_red <- virtual_samples %>%
 ```
 
 
-##
+## Our Data is the Sample Proportions
 
-```{r}
+We are interested in $\hat{p}$ = proportion of red balls in each of the 33 samples, not individual ball colors. That *statistic* is our data.
+
+```{r, echo = FALSE}
 virtual_prop_red <- virtual_samples %>% 
   group_by(replicate) %>% 
   mutate(is_red = (color == "red")) %>% 
   summarize(num_red  = sum(is_red),
             prop_red = mean(is_red)) 
-virtual_prop_red %>% head(n = 8)  # I only have room for a few rows
+virtual_prop_red
 ```
 
 
-## Tactile vs. Virtual Results #1
+## Tactile vs. Virtual Results
 
 Tactile results will always be the same. Virtual results will differ unless we `set.seed()` to control our pseudo-random stream.
 
@@ -199,7 +215,7 @@ sim_plot <- ggplot(virtual_prop_red, aes(x = prop_red)) +
                      limits = c(0, 1)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
   labs(title = "Distribution of 33 Sample Proportions of Red Balls",
-       subtitle = "virtual sampling",
+       subtitle = "results of the virtual sample",
        x = "Proportion of Balls That Were Red (sample size n = 50)", 
        y = "Frequency") +
   theme_linedraw()
@@ -208,11 +224,37 @@ grid.arrange(class_plot, sim_plot)
 ```
 
 
-## Sampling Distribution
+## Sampling Distribution of $\hat{p}$
 
-We need to understand the *sampling distribution* of the statistic we are using to estimate a population value. What is the shape, center, and spread (variability)?
+We need to understand the *sampling distribution* of the statistic used to estimate a population parameter. Here, we use $\hat{p}$ (the sample proportion) estimates $p$ (the population proportion).
 
-Usually we characterize center and spread using mean and SD. Can you tell the shape from the plot?
+Just like we did in EDA, we characterize distributions by:
+
+* shape
+
+* center
+
+* spread (variability)
+
+Note: Some sources use $p$ for the sample proportion and $\pi$ for the population proportion, following the convention of using Greek letters for parameters. Be sure you know which symbols are being used!
+
+
+## Empirical Estimate
+
+Estimate *empirically* (i.e., using data from your virtual samples vs. purely theory) the shape, center, and spread (variability) of the sampling distribution of $\hat{p}$.
+
+```{r echo=FALSE, fig.align="center", out.width='300'}
+knitr::include_graphics("images/tap-to-speak.gif")
+```
+
+How could you modify your virtual experiment/simulation to help you get a better sense of the distribution?
+
+
+## Center and Spread
+
+Usually we characterize center and spread using mean and SD or variance. We also refer to the mean as the *expected value* in the case of theoretical models.
+
+When dealing with empirical data, compute the mean and SD of the various values of the statistic you got from sampling.
 
 ```{r}
 virtual_prop_red %>% 
@@ -221,11 +263,22 @@ virtual_prop_red %>%
 ```
 
 
+## Is It Bell-Shaped?
+
+We already saw a histogram of the data, but we can also make other plots, such as a normal QQ plot to assess normality.
+
+```{r fig.height = 2.75}
+ggplot(virtual_prop_red, aes(sample = prop_red)) +
+  geom_qq() +
+  geom_qq_line()
+```
+
+
 ## Taking More Samples!
 
-Our 33 random samples are not very many if we are trying to understand the true variability that can occur from sample to sample. Let's take more samples!
+Our 33 random samples are a very small experiment if we are trying to understand the true variability that can be observed from sample to sample. Let's take more samples!
 
-Adapt the code to take 1000 samples of size 50. Summarize the count and proportion of red balls in each sample and save it as the object `virtual_prop_red_1000`.
+Adapt the code to take 1000 samples of size 50. Summarize the count and proportion of red balls in each sample and save it as `virtual_prop_red_1000`. Compute the mean and SD of $\hat{p}$ and determine the shape. Is it approximately normal?
 
 ```{r echo=FALSE, fig.align="center", out.width='300'}
 knitr::include_graphics("images/tap-to-speak.gif")
@@ -239,7 +292,7 @@ virtual_prop_red_1000 <- bowl %>%
   rep_sample_n(size = 50, reps = 1000) %>% 
   group_by(replicate) %>% 
   mutate(is_red = (color == "red")) %>% 
-  summarize(num_red  = sum(is_red),
+  summarize(num_red  = sum(is_red), 
             prop_red = mean(is_red)) 
 
 virtual_prop_red_1000 %>% 
@@ -248,12 +301,12 @@ virtual_prop_red_1000 %>%
 ```
 
 
-## Virtual Results #2
+## Distribution Shape
 
 What shape does your distribution of virtual samples appear to have (approximately)?
 
 ```{r, echo = FALSE, fig.height = 4.1}
-ggplot(virtual_prop_red_1000, aes(x = prop_red)) +
+PlotH <- ggplot(virtual_prop_red_1000, aes(x = prop_red)) +
   geom_histogram(binwidth = 0.05, 
                  boundary = 0.5, 
                  color = "white", 
@@ -261,14 +314,44 @@ ggplot(virtual_prop_red_1000, aes(x = prop_red)) +
   scale_x_continuous(breaks = seq(from = 0, to = 1, by = 0.10),
                      limits = c(0, 1)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-  labs(title = "Distribution of 1000 Sample Proportions of Red Balls",
-       subtitle = "virtual sampling",
-       x = "Proportion of Balls That Were Red (sample size n = 50)", 
-       y = "Frequency") +
+  labs(y = NULL) +
   theme_linedraw()
+
+PlotB <- ggplot(virtual_prop_red_1000, aes(x = prop_red)) +
+  geom_boxplot() +
+  scale_x_continuous(breaks = seq(from = 0, to = 1, by = 0.10),
+                     limits = c(0, 1)) +
+  theme_linedraw()
+
+grid.arrange(PlotH, PlotB)
+```
+
+
+## Is It Approximately Normal?
+
+Could we use a normal model for our sampling distribution? 
+
+```{r, echo = FALSE}
+ggplot(virtual_prop_red_1000, aes(sample = prop_red)) +
+  geom_qq() +
+  geom_qq_line()
 ```
 
 
 ## Taking *Larger* Samples
 
-TBA!!!
+Systematically conduct more experiments using different sample sizes (up to $n$ = 2400, the number of balls in the bowl).
+
+Using your data, answer the following questions.
+
+* How does changing sample size affect shape?
+
+* How does changing sample size affect center?
+
+* How does changing sample size affect spread/variability?
+
+* Can we use a normal model? If so, under what conditions?
+
+* Can you make any other observations about the distribution?
+
+Use 1000 reps, or else `rep_sample_n()` can get a little hung up. 

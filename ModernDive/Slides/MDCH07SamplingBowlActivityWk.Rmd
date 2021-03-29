@@ -165,6 +165,8 @@ Usually we characterize center and spread using mean and SD. Calculate those sum
 
 Can you tell the shape from the plot?
 
+**ANSWER:**
+
 
 ### Taking More Samples!
 
