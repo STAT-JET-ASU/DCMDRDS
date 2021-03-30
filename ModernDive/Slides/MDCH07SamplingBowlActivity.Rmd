@@ -30,7 +30,7 @@ Refer to "[
 
 ```{r}
 library(tidyverse)
-library(ggExtra)
+library(moments)   # needed for skewness and kurtosis
 ```
 
 We need `tidyverse` for all our basic data manipulation. Recall that this includes `dplyr` and `ggplot`, among other packages in the `tidyverse` suite of tools.
@@ -303,7 +303,7 @@ virtual_prop_red_1000 %>%
 
 ## Distribution Shape
 
-What shape does your distribution of virtual samples appear to have (approximately)?
+What shape does your distribution of virtual samples appear to have? Can you say it is (approximately) a normal distribution?
 
 ```{r, echo = FALSE, fig.height = 4.1}
 PlotH <- ggplot(virtual_prop_red_1000, aes(x = prop_red)) +
@@ -327,11 +327,16 @@ grid.arrange(PlotH, PlotB)
 ```
 
 
-## Is It Approximately Normal?
+## 
 
-Could we use a normal model for our sampling distribution? 
+```{r}
+virtual_prop_red_1000 %>% 
+  summarize(skew = skewness(prop_red),
+            kurt = kurtosis(prop_red))
+```
 
-```{r, echo = FALSE}
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 4, fig.align = "center"}
 ggplot(virtual_prop_red_1000, aes(sample = prop_red)) +
   geom_qq() +
   geom_qq_line()
@@ -355,3 +360,20 @@ Using your data, answer the following questions.
 * Can you make any other observations about the distribution?
 
 Use 1000 reps, or else `rep_sample_n()` can get a little hung up. 
+
+
+## So what is the population proportion?
+
+We can calculate the population proportions the same way we did with our sample data, but using the entire `bowl` dataset.
+
+```{r, echo = FALSE, fig.height = 4.0}
+ggplot(bowl, aes(x = color, fill = color)) +
+  geom_bar(color = "black") +
+  scale_fill_manual(values = c("red", "white")) +
+  labs(title = "Number of Red and White Balls in the Bowl (N = 2400)") +
+  geom_label(x = "red", y = 450, aes(label = "37.5%")) +
+  geom_label(x = "white", y = 750, aes(label = "62.5%")) +
+  theme_linedraw() +
+  theme(legend.position = "none")
+```
+
