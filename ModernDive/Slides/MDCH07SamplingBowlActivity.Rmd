@@ -30,7 +30,6 @@ Refer to "[
 
 ```{r}
 library(tidyverse)
-library(moments)   # needed for skewness and kurtosis
 ```
 
 We need `tidyverse` for all our basic data manipulation. Recall that this includes `dplyr` and `ggplot`, among other packages in the `tidyverse` suite of tools.
@@ -330,13 +329,14 @@ grid.arrange(PlotH, PlotB)
 ## 
 
 ```{r}
+library(moments)   # needed for skewness and kurtosis
 virtual_prop_red_1000 %>% 
   summarize(skew = skewness(prop_red),
             kurt = kurtosis(prop_red))
 ```
 
 
-```{r, echo = FALSE, fig.height = 3, fig.width = 4, fig.align = "center"}
+```{r, echo = FALSE, fig.height = 2.75, fig.width = 3.75, fig.align = "center"}
 ggplot(virtual_prop_red_1000, aes(sample = prop_red)) +
   geom_qq() +
   geom_qq_line()
