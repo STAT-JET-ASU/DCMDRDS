@@ -1,5 +1,5 @@
 ---
-title: "Sampling Bowl Activity<br>*Modern Dive* Chapter 7"
+title: "The Sampling Bowl<br>*Modern Dive* Chapter 7"
 author: "Author: Jill E. Thomley"
 date: '`r format(Sys.time(), "%B %d, %Y @ %I:%M %p")`'
 output: 
@@ -80,9 +80,13 @@ Assuming there are more than 50 red balls and 50 white balls in the bowl, when w
 
 That means all proportions from 0 = 0% to 1 = 100% are *possible*. But are they all equally *probable*? Why or why not?
 
-```{r echo=FALSE, fig.align="center", out.width='300'}
+```{r echo = FALSE, fig.align="center", out.width='300'}
 knitr::include_graphics("images/tap-to-speak.gif")
 ```
+
+<p>&nbsp;&</p>
+
+<p style = "font-size: 50%; text-align: center;">image source https://dribbble.com/shots/3613801-Tap-to-speak</p>
 
 
 ## Virtual Sampling

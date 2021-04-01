@@ -1,0 +1,427 @@
+---
+title: "Resampling Pennies #1<br>*Modern Dive* Chapter 8"
+author: "Author: Jill E. Thomley"
+date: '`r format(Sys.time(), "%B %d, %Y @ %I:%M %p")`'
+output: 
+  ioslides_presentation:
+    logo: images/logoASU.jpg
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, comment = NA)
+```
+
+
+## Before We Begin...
+
+These slides are not meant to be standalone information. You should take notes to flesh out the contents. I recommend that you create an R Markdown document where you can combine information and code from the slides and your own additional notes and explorations to make connections.
+
+**Related Materials**
+
+* Ch 5 of *Mathematical Statistics with Resampling and R, 2^nd^ Ed.*
+* Ch 7 of [*Modern Dive*](https://moderndive.com/7-sampling.html) (basis for this activity)
+* DataCamp [Sampling in R](https://learn.datacamp.com/courses/sampling-in-r)
+
+Refer to "[
+4.1 ioslides presentation](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html)" in [*R Markdown: The Definitive Guide*](https://bookdown.org/yihui/rmarkdown/) if you are interested in creating R Markdown slides.
+
+
+## Packages
+
+```{r}
+library(tidyverse)
+```
+
+We need `tidyverse` for all our basic data manipulation. Recall that this includes `dplyr` and `ggplot`, among other packages in the `tidyverse` suite of tools.
+
+```{r}
+library(moderndive)
+```
+
+We need `moderndive` for some of the data and functions used in the pennies activity. 
+
+```{r}
+library(infer)
+```
+
+We will use `infer` to compute confidence intervals in a `tidy`, algorithmic way (in #2).
+
+
+## Bowl vs. Pennies
+
+During the [Sampling Bowl Activity](https://stat-jet-asu.github.io/DCMDRDS/ModernDive/Slides/MDCH07SamplingBowlActivity.html#1) from Chapter 7 of Modern Dive, we sampled repeatedly from a population with a known proportion of red balls ($p$) versus white to understand how an *estimate* of the proportion of red balls ($\hat{p}$) taken from a sample can vary from sample to sample. We learned that:
+
+* taking ***more*** samples helps us better characterize the shape, center, and spread of the sampling distribution, regardless of the sample size; and
+* taking larger samples tends to decrease the variability of the statistic from sample to sample.
+
+In most real-life scenarios, we only get to take *one* sample and do not know the population value. How can we study sampling variability when we only have one sample to work with? 
+
+
+## Sample: Pennies Circulating in 2019
+
+Imagine all the pennies being used in the United States in 2019. What if we're interested in the the average year in which all the pennies were minted? We would *have to* sample...
+
+```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 8.2: 50 US pennies labelled (pennies_sample).", out.width='600'}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/fe3d13cf8652057fd5ea97fc4d7db1f00b2b1f34/62975/images/sampling/pennies/deliverable/3.jpg")
+```
+
+
+## EDA on the `pennies_sample`
+
+What is the shape, center, and spread (variability) of the sample?
+
+* Create a histogram and QQ plot to assess shape
+* Create a boxplot to detect the presence of outliers
+* Compute the sample mean and standard deviation
+* Also, tabulate the frequency (count) of different years 
+
+```{r echo=FALSE, fig.align="center", out.width='300'}
+knitr::include_graphics("images/tap-to-speak.gif")
+```
+
+<p style = "font-size: 50%; text-align: center;">image source https://dribbble.com/shots/3613801-Tap-to-speak</p>
+
+## What is the Shape?
+
+Visualize the shape of the distribution and check for outliers.
+
+```{r, echo = FALSE}
+ggplot(pennies_sample, aes(x = year)) +
+  geom_histogram(binwidth = 10, color = "white", fill = "skyblue") +
+  geom_boxplot(aes(y = -2.5), fill = "orange", width = 3, lwd = 1) +
+  scale_x_continuous(breaks = seq(1960, 2020, 10)) +
+  scale_y_continuous(breaks = 0:15) +
+  labs(title = "Mint Years for n = 50 Pennies Sampled in 2019",
+       x = "year of minting",
+       y = "number of pennies",
+       caption = "See also Figure 8.3 in Modern Dive") +
+  theme_linedraw()
+```
+
+
+## Are the Data Approximately Normal?
+
+Does the Normal QQ plot show a deviation from normality? 
+
+```{r, echo = FALSE}
+ggplot(pennies_sample, aes(sample = year)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(title = "Mint Years for n = 50 Pennies Sampled in 2019",
+       x = "theoretical normal quantiles",
+       y = "sample quantiles") +
+  theme_linedraw()
+```
+
+
+## Frequency of Years
+
+```{r}
+pennies_sample %>% count(year) %>% arrange(year)
+```
+
+
+## Summaries of Years
+
+If the pennies in `pennies_sample` are representative sample of all US pennies in circulation in 2019, then the sample mean $\bar{x}$ is likely a decent estimate of the population mean $\mu$.
+
+```{r, echo = FALSE}
+pennies_sample %>% 
+  summarize(n = n(), xbar = mean(year), s = sd(year)) %>% 
+  knitr::kable(digits = 2, align = rep("c", 3))
+```
+
+<p>&nbsp;</p>
+
+The sample mean $\bar{x}$ = 1995.44 (or about 1995, since we cannot have fractional years in context) is known as a *point estimate* of the population mean $\mu$ because $\bar{x}$ is a single value.
+
+
+## Some Questions...
+
+Did we sample with or without replacement here?
+
+What is your best guess about the population size $N$?
+
+Is it reasonable to assume the pennies are independent?
+
+Do you think this sample is representative of pennies in 2019?
+
+```{r echo=FALSE, fig.align="center", out.width='300'}
+knitr::include_graphics("images/tap-to-speak.gif")
+```
+
+
+## Interval Estimates
+
+While a point estimate is a single value, an *interval estimate* is a range of probable values for a population parameter.
+
+To compute an interval estimate, we need to know the sampling distribution of the statistic we are using to estimate. 
+
+Traditional methods for $\bar{x}$ are based on the normal distribution (thanks to the spectacular Central Limit Theorem).
+
+*BUT* . . . assumptions must be met to use traditional methods.
+
+Now we can use computational methods like *bootstrapping* to develop interval estimates, with fewer assumptions.
+
+<hr>
+
+**bootstrap** (*verb*) : to get into or out of a situation using existing resources; as in, “to pull oneself up by one's bootstraps.”
+
+
+## The Bootstrap Idea
+
+What is our "existing resource"? It's the one sample we have.
+
+From Chapter 5 of *Mathematical Statistics with Resampling and R, 2^nd^ Ed.* (p. 104)
+
+*"The original sample approximates the population from which it was drawn. So, resamples from this sample approximate what we would get if we took many samples from the population. The bootstrap distribution of a statistic, based on many resamples, approximates the sampling distribution of the statistic, based on many samples." *
+
+<hr>
+
+The BIG assumption: that our original sample is representative of the population. 
+
+<hr>
+
+
+## Bootstrap Resampling
+
+Treat the sample as if it is the population.
+
+Repeatedly resample from it *with replacement*. (use same $n$)
+
+Compute the relevant statistic from each resample.
+
+Analyze the *re-*sampling distribution: shape, mean, SE.
+
+```{r, echo = FALSE, fig.height = 2.6}
+pennies_resample <- tibble(
+  year = c(1976, 1962, 1976, 1983, 2017, 2015, 2015, 1962, 2016, 1976, 
+           2006, 1997, 1988, 2015, 2015, 1988, 2016, 1978, 1979, 1997, 
+           1974, 2013, 1978, 2015, 2008, 1982, 1986, 1979, 1981, 2004, 
+           2000, 1995, 1999, 2006, 1979, 2015, 1979, 1998, 1981, 2015, 
+           2000, 1999, 1988, 2017, 1992, 1997, 1990, 1988, 2006, 2000)
+)
+plotR <- ggplot(pennies_resample, aes(x = year)) +
+  geom_histogram(binwidth = 10, color = "white") +
+    geom_boxplot(aes(y = -2.5), fill = "orange", width = 3, lwd = 1) +
+  scale_x_continuous(breaks = seq(1960, 2020, 10)) +
+  scale_y_continuous(breaks = seq(0, 16, 2)) +
+  labs(title = "One resample of 50 pennies",
+       caption = "See also Figure 8.9 in Modern Dive")
+plotO <- ggplot(pennies_sample, aes(x = year)) +
+  geom_histogram(binwidth = 10, color = "white") +
+    geom_boxplot(aes(y = -2.5), fill = "orange", width = 3, lwd = 1) +
+  scale_x_continuous(breaks = seq(1960, 2020, 10)) +
+  scale_y_continuous(breaks = seq(0, 16, 2)) +
+  labs(title = "Original sample of 50 pennies",
+       caption = "See also Figure 8.9 in Modern Dive")
+gridExtra::grid.arrange(plotO, plotR, ncol = 2)
+```
+
+
+## Tactile Resampling 35 Times
+
+As expected, there is sampling variability among the resamples.
+
+```{r, echo = FALSE}
+ggplot(pennies_resamples, aes(x = year)) +
+  geom_histogram(bins = 10) +
+  facet_wrap(name ~ .)
+```
+
+
+## Sample Mean of Each Resample
+
+We compute the sample mean $\bar{x}$ from each of the resamples.
+
+```{r, echo = FALSE}
+resampled_means <- pennies_resamples %>% 
+  group_by(name) %>% 
+  summarize(mean_year = mean(year))
+resampled_means
+```
+
+
+## Distribution of the Resample Means
+
+```{r, echo = FALSE, fig.height = 3.5}
+ggplot(resampled_means, aes(x = mean_year)) +
+  geom_histogram(binwidth = 1, boundary = 1990, color = "white", fill = "skyblue") +
+  geom_boxplot(aes(y = -2.5), fill = "orange", width = 3, lwd = 1) +
+  scale_x_continuous(breaks = seq(1980, 2020, 1)) +
+  scale_y_continuous(breaks = 0:15) +
+  labs(title = "Average Mint Year from 35 Bootstrap Resamples",
+       subtitle = "sample size = 50",
+       x = "mean year of minting from resamples",
+       y = "number of resamples",
+       caption = "See also Figure 8.11 in Modern Dive") +
+  theme_linedraw()
+```
+
+```{r, echo = FALSE}
+resampled_means %>% 
+  summarize(resamples = n(), xbar = mean(mean_year), se = sd(mean_year)) %>% 
+  knitr::kable(digits = 2, align = rep("c", 3))
+```
+
+
+## Approximately Normal?
+
+The authors of Modern Dive state, "Observe in Figure 8.11 that the distribution looks roughly normal..." Do you agree?
+
+```{r, echo = FALSE, fig.height = 4.0}
+ggplot(resampled_means, aes(sample = mean_year)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(title = "Normal QQ Plot of Average Mint Year from 35 Bootstrap Resamples",
+       subtitle = "sample size = 50",
+       x = "theoretical normal quantiles",
+       y = "smaple quantiles") +
+  theme_linedraw()
+```
+
+
+## Computer Simulation of Resampling
+
+Our bootstrap resamples will be samples of size 50 drawn with replacement from the original sample (which had $n$ = 50).
+
+```{r}
+my_virtual_resample <- pennies_sample %>% 
+  rep_sample_n(size = 50, replace = TRUE)   # drawn one sample
+```
+
+How can we virtually replicate the tactile resampling exercise, where 35 people each took one resample?
+
+```{r echo=FALSE, fig.align="center", out.width='300'}
+knitr::include_graphics("images/tap-to-speak.gif")
+```
+
+
+## Replicating the Tactile Resample
+
+To replicate the tactile sample, we need 35 samples of size 50.
+
+```{r, eval = FALSE}
+virtual_resampled_means <- pennies_sample %>% 
+  rep_sample_n(size = 50, replace = TRUE, reps = 35) %>% 
+  group_by(replicate) %>% 
+  summarize(mean_year = mean(year))
+```
+
+```{r, echo = FALSE, fig.height = 2.8}
+virtual_resampled_means <- pennies_sample %>% 
+  rep_sample_n(size = 50, replace = TRUE, reps = 35) %>% 
+  group_by(replicate) %>% 
+  summarize(mean_year = mean(year))
+ggplot(virtual_resampled_means, aes(x = mean_year)) +
+  geom_histogram(binwidth = 1, boundary = 1990, color = "white", fill = "skyblue") +
+  geom_boxplot(aes(y = -2.5), fill = "orange", width = 3, lwd = 1) +
+  scale_x_continuous(breaks = seq(1980, 2020, 1)) +
+  scale_y_continuous(breaks = seq(0, 16, 2)) +
+  labs(title = "Average Mint Year from 35 Bootstrap Resamples",
+       subtitle = "sample size = 50",
+       x = "mean year of minting from resamples",
+       y = "number of resamples",
+       caption = "See also Figure 8.12 in Modern Dive") +
+  theme_linedraw()
+```
+
+
+## More Samples, Better Estimate
+
+Let's take 1000 samples of size 50 to better "fill in the blanks".
+
+```{r, eval = FALSE}
+virtual_resampled_means <- pennies_sample %>% 
+  rep_sample_n(size = 50, replace = TRUE, reps = 1000) %>% 
+  group_by(replicate) %>% 
+  summarize(mean_year = mean(year))
+```
+
+*Recall that...*
+
+Changing the sample size (the size of individual samples) affects the properties of the sampling distribution itself.
+
+Changing the number of resamples (reps) affects our ability to get stable estimates the properties of the sampling distribution (shape, center, spread).
+
+
+## Distribution of the Resample Means
+
+```{r, echo = FALSE, fig.height = 3.5}
+virtual_resampled_means <- pennies_sample %>% 
+  rep_sample_n(size = 50, replace = TRUE, reps = 1000) %>% 
+  group_by(replicate) %>% 
+  summarize(mean_year = mean(year))
+ggplot(virtual_resampled_means, aes(x = mean_year)) +
+  geom_histogram(binwidth = 1, boundary = 1990, color = "white", fill = "skyblue") +
+  geom_boxplot(aes(y = -25.5), fill = "orange", width = 30, lwd = 1) +
+  scale_x_continuous(breaks = seq(1980, 2020, 1)) +
+  labs(title = "Average Mint Year from 1000 Bootstrap Resamples",
+       subtitle = "sample size = 50",
+       x = "mean year of minting from resamples",
+       y = "number of resamples",
+       caption = "See also Figure 8.14 in Modern Dive") +
+  theme_linedraw()
+```
+
+```{r, echo = FALSE}
+virtual_resampled_means %>% 
+  summarize(resamples = n(), xbar = mean(mean_year), se = sd(mean_year)) %>% 
+  knitr::kable(digits = 2, align = rep("c", 3))
+```
+
+
+## Approximately Normal?
+
+Is the sampling distribution of $\bar{x}$ approximately normal?
+
+```{r, echo = FALSE, fig.height = 4.0}
+ggplot(virtual_resampled_means, aes(sample = mean_year)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(title = "Normal QQ Plot of Avg. Mint Year from 1000 Bootstrap Resamples",
+       subtitle = "sample size = 50",
+       x = "theoretical normal quantiles",
+       y = "sample quantiles") +
+  theme_linedraw()
+```
+
+
+## Resampling with a `for` Loop
+
+For very large numbers of reps, it is more time-efficient to use a `for` loop than to use `rep_sample_n`. 
+
+```{r}
+reps  <- 10^5                           # number of re-samples
+years <- pennies_sample %>% pull(year)  # extract the variable
+mean_year <- numeric(reps)         # initialize storage vector
+
+for (i in 1:reps) {
+  mean_year[i] <- mean(sample(years, size = 50, replace = TRUE))
+}
+
+virtual_resampled_means <- tibble(replicate = 1:reps, mean_year)
+```
+
+The variable *i* serves as both a loop counter and vector location, which is why we initiate the `for` loop from 1 (there is no location zero in a mathematical vector). 
+
+
+## Distribution of the Resample Means
+
+```{r, echo = FALSE, fig.height = 3.5}
+ggplot(virtual_resampled_means, aes(x = mean_year)) +
+  geom_histogram(color = "white", fill = "skyblue") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  labs(title = "Average Mint Year from 100,000 Bootstrap Resamples",
+       subtitle = "sample size = 50",
+       x = "mean year of minting from resamples",
+       y = "number of resamples",
+       caption = "See also Figure 8.14 in Modern Dive") +
+  theme_linedraw()
+```
+
+```{r, echo = FALSE}
+virtual_resampled_means %>% 
+  summarize(resamples = n(), xbar = mean(mean_year), se = sd(mean_year)) %>% 
+  knitr::kable(digits = 2, align = rep("c", 3))
+```

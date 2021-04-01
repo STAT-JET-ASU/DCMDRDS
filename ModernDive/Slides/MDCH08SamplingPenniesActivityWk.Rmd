@@ -1,0 +1,186 @@
+---
+title: "MDCH08: Resampling Pennies Activity"
+subtitle: "Student Worksheet"
+author: "YOUR NAME HERE"
+date: '`r format(Sys.time(), "%A, %B %d, %Y @ %I:%M %p")`'
+output: 
+  html_document: 
+    theme: yeti
+    highlight: textmate
+    toc: TRUE
+    toc_depth: 5
+---
+
+```{r globaloptions, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, comment = NA)
+```
+***
+
+### Packages
+
+```{r loadpackages}
+library(tidyverse)
+library(moderndive)
+library(infer)
+```
+
+
+### Sample of Pennies Circulating in 2019
+
+Imagine all the pennies being used in the United States in 2019. What if we're interested in the the average year in which all the pennies were minted? We would *have to* sample...
+
+```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 8.2: 50 US pennies labelled (pennies_sample).", out.width='600'}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/fe3d13cf8652057fd5ea97fc4d7db1f00b2b1f34/62975/images/sampling/pennies/deliverable/3.jpg")
+```
+
+#### EDA on the `pennies_sample`
+
+What is the shape, center, and spread (variability) of the sample?
+
+* Create a histogram and QQ plot to assess shape
+* Create a boxplot to detect the presence of outliers
+* Compute the sample mean and standard deviation
+* Also, tabulate the frequency (count) of different years 
+
+##### Structure
+
+```{r}
+glimpse(pennies_sample)
+head(pennies_sample)
+```
+
+##### Histogram
+
+```{r}
+
+```
+
+##### QQ Plot
+
+```{r}
+
+```
+
+##### Boxplot
+
+```{r}
+
+```
+
+##### Mean and SD
+
+```{r}
+
+```
+
+##### Frequency Table
+
+```{r}
+
+```
+
+#### Some Questions...
+
+Q1: Did we sample with or without replacement here?
+
+**ANSWER:**
+
+Q2: What is your best guess about the population size $N$?
+
+**ANSWER:**
+
+Q3: Is it reasonable to assume the pennies are independent?
+
+**ANSWER:**
+
+Q4: Do you think this sample is representative of pennies in 2019?
+
+**ANSWER:**
+
+
+### Replicating the Tactile Resample
+
+The [book](https://moderndive.com/8-confidence-intervals.html) describes a tactile resampling activity using slipsof paper in a hat in which there was a total of 35 resamples. You will replicate this virtually.
+
+#### Bootstrap Resampling Method
+
+* Treat the sample as if it is the population.
+
+* Repeatedly resample from it *with replacement*. (use same $n$)
+
+* Compute the relevant statistic from each resample.
+
+* Analyze the *re-*sampling distribution: shape, mean, standard error (SE).
+
+#### Take 1 Resample of Size 50
+
+```{r}
+my_virtual_resample <- pennies_sample %>% 
+  rep_sample_n(size = 50, replace = TRUE)
+my_virtual_resample
+```
+
+#### Take 35 Resamples of Size 50
+
+```{r}
+
+```
+
+##### Compute the Resampled Means
+
+```{r}
+
+```
+
+##### Histogram of Resampled Means
+
+```{r}
+
+```
+
+
+### Taking More Samples!
+
+#### Take 1000 Resamples of Size 50
+
+```{r}
+
+```
+
+#### Distribution of 1000 Resamples
+
+What is the shape, center, and spread (variability) of the resampled means?
+
+* Create a histogram and QQ plot to assess shape
+* Create a boxplot to detect the presence of outliers
+* Compute the resample mean and standard error
+
+##### Histogram
+
+```{r}
+
+```
+
+##### QQ Plot
+
+```{r}
+
+```
+
+##### Boxplot
+
+```{r}
+
+```
+
+##### Mean and Standard Error
+
+```{r}
+
+```
+
+
+***
+```{r}
+sessionInfo()
+```
