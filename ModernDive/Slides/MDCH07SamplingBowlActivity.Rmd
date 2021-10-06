@@ -71,9 +71,11 @@ knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/ee8292df457bd73d7
 
 If we were sampling *with replacement*---drawing one ball, noting its color, and putting it back before drawning another---we could model our sample with a binomial distribution. The parameter $p$ would be the true proportion of red balls. 
 
-However, we are sampling *without replacement* here. If we think of each slot on the "shovel" being filled sequentially, the color of the ball that fills each slot changes the color probabilities of the subsequent balls (*hypergeometric* distribution).
+We are sampling *without replacement* here, which is often more realistic with respect to real-world situations. If we think of each slot on the "shovel" being filled in order, the color of the ball that fills each slot changes the color probabilities of the subsequent balls (this would be a *hypergeometric* model).
 
-Note: In real-world problems where sample size *n* is very small compared to the population size $N$, we  use the binomial model anyway when sampling without replacement. Why?
+<hr>
+
+Note: In real-world problems where the sample size *n* is very small compared to overall population size, we use the binomial model anyway when sampling without replacement. Why?
 
 
 ## Random Sampling
@@ -82,7 +84,7 @@ Assuming there are more than 50 red balls and 50 white balls in the bowl, when w
 
 That means all proportions from 0 = 0% to 1 = 100% are *possible*. But are they all equally *probable*? Why or why not?
 
-```{r echo = FALSE, fig.align = "center", out.width = '300'}
+```{r, fig.align = "center", out.width = '300'}
 knitr::include_graphics("images/tap-to-speak.gif")
 ```
 
@@ -177,7 +179,7 @@ virtual_samples <- bowl %>%
   rep_sample_n(size = 50, reps = 33)
 ```
 
-Calculate the count and proportion of red balls in each sample (`replicate`).
+Calculate the count and proportion of red balls in each sample (i.e., each `replicate` here).
 
 ```{r, echo = TRUE, eval = FALSE}
 virtual_prop_red <- virtual_samples %>% 
@@ -227,7 +229,7 @@ grid.arrange(class_plot, sim_plot)
 
 ## Sampling Distribution of $\hat{p}$
 
-We need to understand the *sampling distribution* of the statistic used to estimate a population parameter. Here, we use $\hat{p}$ (the sample proportion) estimates $p$ (the population proportion).
+We need to understand the *sampling distribution* of any statistic that is used to estimate a population parameter. Here, we use $\hat{p}$ (sample proportion) estimates $p$ (population proportion).
 
 Just like we did in EDA, we characterize distributions by:
 
@@ -242,18 +244,18 @@ Note: Some sources use $p$ for the sample proportion and $\pi$ for the populatio
 
 ## Empirical Estimate
 
-Estimate *empirically* (i.e., using data from your virtual samples vs. purely theory) the shape, center, and spread (variability) of the sampling distribution of $\hat{p}$.
+Estimate *empirically* (i.e., using data from your virtual samples vs. using theory) the shape, center, and spread (i.e., variability) of the sampling distribution of $\hat{p}$.
 
-```{r echo=FALSE, fig.align = "center", out.width = '300'}
+```{r fig.align = "center", out.width = '300'}
 knitr::include_graphics("images/tap-to-speak.gif")
 ```
 
-How could you modify your virtual experiment/simulation to help you get a better sense of the distribution?
+How could you modify your virtual experiment / simulation to help you get a better sense of the distribution?
 
 
 ## Center and Spread
 
-Usually we characterize center and spread using mean and SD or variance. We also refer to the mean as the *expected value* in the case of theoretical models.
+Usually we characterize center and spread using mean and SD or variance. We also refer to the mean as the *expected value* in the case of theoretical models (as a reminder).
 
 When dealing with empirical data, compute the mean and SD of the various values of the statistic you got from sampling.
 
@@ -263,8 +265,10 @@ virtual_prop_red %>%
             sd_props   = sd(prop_red))
 ```
 
+Thus, our estimate of $\mu_{\hat{p}}$ is `r mean(virtual_prop_red$prop_red)` and our estimate of $\sigma_{\hat{p}}$ is `r sd(virtual_prop_red$prop_red)`. The standard deviation of a sampling distribution is called the *standard error* (SE) and depends on the sample size.
 
-## Is It Bell-Shaped?
+
+## Is the Distribution Bell-Shaped?
 
 We already saw a histogram of the data, but we can also make other plots, such as a normal QQ plot to assess normality.
 
@@ -279,7 +283,7 @@ ggplot(virtual_prop_red, aes(sample = prop_red)) +
 
 Our 33 random samples are a very small experiment if we are trying to understand the true variability that can be observed from sample to sample. Let's take more samples!
 
-Adapt the code to take 1000 samples of size 50. Summarize the count and proportion of red balls in each sample and save it as `virtual_prop_red_1000`. Compute the mean and SD of $\hat{p}$ and determine the shape. Is it approximately normal?
+Adapt the code to take 1000 samples of size 50. Summarize the count and proportion of red balls in each sample and save it as `virtual_prop_red_1000`. Compute the mean and SE of $\hat{p}$ and determine the shape. Is it approximately normal?
 
 ```{r echo=FALSE, fig.align="center", out.width='300'}
 knitr::include_graphics("images/tap-to-speak.gif")
