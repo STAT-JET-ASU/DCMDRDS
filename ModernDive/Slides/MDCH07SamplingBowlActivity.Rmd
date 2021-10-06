@@ -7,8 +7,13 @@ output:
     logo: images/logoASU.jpg
 ---
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, comment = NA)
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  comment = NA,
+  echo = FALSE
+)
 ```
 
 
@@ -22,25 +27,22 @@ These slides are not meant to be standalone information. You should take notes t
 * DataCamp [Foundations of Probability in R](https://learn.datacamp.com/courses/foundations-of-probability-in-r)
 * DataCamp [Sampling in R](https://learn.datacamp.com/courses/sampling-in-r)
 
-Refer to "[
-4.1 ioslides presentation](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html)" in [*R Markdown: The Definitive Guide*](https://bookdown.org/yihui/rmarkdown/) if you are interested in creating R Markdown slides.
-
 
 ## Packages
 
-```{r}
+```{r, echo = TRUE}
 library(tidyverse)
 ```
 
 We need `tidyverse` for all our basic data manipulation. Recall that this includes `dplyr` and `ggplot`, among other packages in the `tidyverse` suite of tools.
 
-```{r}
+```{r, echo = TRUE}
 library(moderndive)
 ```
 
 We need `moderndive` for some of the data and functions used in the sampling bowl activity. 
 
-```{r}
+```{r, echo = TRUE}
 library(gridExtra)
 ```
 
@@ -51,7 +53,7 @@ We need `gridExtra` to arrange and display multiple plots.
 
 What proportion of the balls are red? We could count all of them (take a *census*), but that would be a long process ($N$ = 2400).
 
-```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 7.1: A bowl filled with red and white balls.", out.width='600'}
+```{r, fig.align = "center", fig.cap = "MD Figure 7.1: A bowl filled with red and white balls.", out.width = '600'}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/0868c64eb2998fbe3e3bfccf7ff55e746341baf3/eeab1/images/sampling/balls/sampling_bowl_1.jpg")
 ```
 
@@ -60,7 +62,7 @@ knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/0868c64eb2998fbe3
 
 Instead of counting the entire population (*census*), we can select a random sample to use as an estimate ($n$ = 50 here).
 
-```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 7.3: Removing 50 balls from the bowl.", out.width='600'}
+```{r, fig.align="center", fig.cap="MD Figure 7.3: Removing 50 balls from the bowl.", out.width='600'}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/ee8292df457bd73d7a1a7d75c21be32d6e8659d6/30e62/images/sampling/balls/sampling_bowl_3_cropped.jpg")
 ```
 
@@ -80,13 +82,9 @@ Assuming there are more than 50 red balls and 50 white balls in the bowl, when w
 
 That means all proportions from 0 = 0% to 1 = 100% are *possible*. But are they all equally *probable*? Why or why not?
 
-```{r echo = FALSE, fig.align="center", out.width='300'}
+```{r echo = FALSE, fig.align = "center", out.width = '300'}
 knitr::include_graphics("images/tap-to-speak.gif")
 ```
-
-<p>&nbsp;&</p>
-
-<p style = "font-size: 50%; text-align: center;">image source https://dribbble.com/shots/3613801-Tap-to-speak</p>
 
 
 ## Virtual Sampling
@@ -95,11 +93,11 @@ We cannot physically replicate this experiment, but we can do so virtually. The 
 
 Scoop one `virtual_shovel` of balls using the following code.
 
-```{r}
+```{r, echo = TRUE}
 virtual_shovel <- bowl %>% rep_sample_n(size = 50, reps = 1)
 ```
 
-The `rep_sample_n()` function is from the package `infer` and is used by package `moderndive`.
+The `rep_sample_n()` function is from the package `infer` and is used by the package `moderndive`.
 
     rep_sample_n(tbl, size, replace = FALSE, reps = 1, prob = NULL)
     
@@ -110,9 +108,9 @@ Defaults are sampling *without* replacement, equal probability of being selected
 
 The proportion of red balls in your sample is an *estimate* of the proportion of red balls in the `bowl`. 
 
-```{r, eval = FALSE}
+```{r, echo = TRUE, eval = FALSE}
 virtual_shovel %>% 
-  mutate(is_red = (color == "red")) %>% 
+  mutate(is_red = color == "red") %>% 
   summarize(num_red  = sum(is_red),
             prop_red = mean(is_red)) 
 ```
@@ -128,13 +126,13 @@ What if we wanted to calculate the proportion of white balls in the sample inste
 
 Here are the results of my sample. What should the numbers of red and white balls add up to? What about the proportions?
 
-```{r}
+```{r, echo = TRUE}
 virtual_shovel %>% 
-  mutate(is_red = (color == "red"),
-         is_white = (color == "white")) %>% 
-  summarize(num_red  = sum(is_red),
-            prop_red = mean(is_red),
-            num_white = sum(is_white),
+  mutate(is_red   = color == "red",
+         is_white = color == "white") %>% 
+  summarize(num_red    = sum(is_red),
+            prop_red   = mean(is_red),
+            num_white  = sum(is_white),
             prop_white = mean(is_white))
 ```
 
@@ -143,7 +141,7 @@ virtual_shovel %>%
 
 In the physical scenario described in Modern Dive, there were 33 students in the class, each of whom drew one sample from the physical `bowl`. Their results are shown below. 
 
-```{r, echo = FALSE, fig.height = 3.75}
+```{r, fig.height = 3.75}
 class_plot <- ggplot(tactile_prop_red, aes(x = prop_red)) +
   geom_histogram(binwidth = 0.05, boundary = 0.5, color = "white", fill = "skyblue") +
   scale_x_continuous(breaks = seq(from = 0, to = 1, by = 0.10),
@@ -163,7 +161,7 @@ class_plot
 
 What seems like the most probable value for $p$ = proportion of red balls in the `bowl`, based on the plot of 33 samples? Why?
 
-```{r echo=FALSE, fig.align="center", out.width='300'}
+```{r fig.align = "center", out.width = '300'}
 knitr::include_graphics("images/tap-to-speak.gif")
 ```
 
@@ -174,17 +172,17 @@ knitr::include_graphics("images/tap-to-speak.gif")
 
 Thanks to the power of computers, you can replicate the class sampling process. Set the `reps` to 33 so you get one sample of size 50 for each virtual student. 
 
-```{r}
+```{r, echo = TRUE}
 virtual_samples <- bowl %>% 
   rep_sample_n(size = 50, reps = 33)
 ```
 
 Calculate the count and proportion of red balls in each sample (`replicate`).
 
-```{r, eval = FALSE}
+```{r, echo = TRUE, eval = FALSE}
 virtual_prop_red <- virtual_samples %>% 
   group_by(replicate) %>% 
-  mutate(is_red = (color == "red")) %>% 
+  mutate(is_red = color == "red") %>% 
   summarize(num_red  = sum(is_red),
             prop_red = mean(is_red)) 
 ```
@@ -194,10 +192,10 @@ virtual_prop_red <- virtual_samples %>%
 
 We are interested in $\hat{p}$ = proportion of red balls in each of the 33 samples, not individual ball colors. That *statistic* is our data.
 
-```{r, echo = FALSE}
+```{r}
 virtual_prop_red <- virtual_samples %>% 
   group_by(replicate) %>% 
-  mutate(is_red = (color == "red")) %>% 
+  mutate(is_red = color == "red") %>% 
   summarize(num_red  = sum(is_red),
             prop_red = mean(is_red)) 
 virtual_prop_red
@@ -208,7 +206,7 @@ virtual_prop_red
 
 Tactile results will always be the same. Virtual results will differ unless we `set.seed()` to control our pseudo-random stream.
 
-```{r, echo = FALSE, fig.height = 4.1}
+```{r, fig.height = 4.1}
 sim_plot <- ggplot(virtual_prop_red, aes(x = prop_red)) +
   geom_histogram(binwidth = 0.05, 
                  boundary = 0.5, 
@@ -246,7 +244,7 @@ Note: Some sources use $p$ for the sample proportion and $\pi$ for the populatio
 
 Estimate *empirically* (i.e., using data from your virtual samples vs. purely theory) the shape, center, and spread (variability) of the sampling distribution of $\hat{p}$.
 
-```{r echo=FALSE, fig.align="center", out.width='300'}
+```{r echo=FALSE, fig.align = "center", out.width = '300'}
 knitr::include_graphics("images/tap-to-speak.gif")
 ```
 
@@ -262,7 +260,7 @@ When dealing with empirical data, compute the mean and SD of the various values 
 ```{r}
 virtual_prop_red %>% 
   summarize(mean_props = mean(prop_red),
-            sd_props = sd(prop_red))
+            sd_props   = sd(prop_red))
 ```
 
 
@@ -270,7 +268,7 @@ virtual_prop_red %>%
 
 We already saw a histogram of the data, but we can also make other plots, such as a normal QQ plot to assess normality.
 
-```{r fig.height = 2.75}
+```{r, echo = TRUE, fig.height = 2.75}
 ggplot(virtual_prop_red, aes(sample = prop_red)) +
   geom_qq() +
   geom_qq_line()
@@ -290,17 +288,17 @@ knitr::include_graphics("images/tap-to-speak.gif")
 
 ## 1000 Virtual Samples
 
-```{r}
+```{r, echo = TRUE}
 virtual_prop_red_1000 <- bowl %>% 
   rep_sample_n(size = 50, reps = 1000) %>% 
   group_by(replicate) %>% 
-  mutate(is_red = (color == "red")) %>% 
+  mutate(is_red = color == "red") %>% 
   summarize(num_red  = sum(is_red), 
             prop_red = mean(is_red)) 
 
 virtual_prop_red_1000 %>% 
   summarize(mean_props = mean(prop_red),
-            sd_props = sd(prop_red))
+            sd_props   = sd(prop_red))
 ```
 
 
@@ -308,7 +306,7 @@ virtual_prop_red_1000 %>%
 
 What shape does your distribution of virtual samples appear to have? Can you say it is (approximately) a normal distribution?
 
-```{r, echo = FALSE, fig.height = 4.1}
+```{r, fig.height = 4.1}
 PlotH <- ggplot(virtual_prop_red_1000, aes(x = prop_red)) +
   geom_histogram(binwidth = 0.05, 
                  boundary = 0.5, 
@@ -332,15 +330,15 @@ grid.arrange(PlotH, PlotB)
 
 ## 
 
-```{r}
-library(moments)   # needed for skewness and kurtosis
+```{r, echo = TRUE}
+library(moments)
 virtual_prop_red_1000 %>% 
-  summarize(skew = skewness(prop_red),
-            kurt = kurtosis(prop_red))
+  summarize(skew   = skewness(prop_red),
+            exkurt = kurtosis(prop_red) - 3)
 ```
 
 
-```{r, echo = FALSE, fig.height = 2.75, fig.width = 3.75, fig.align = "center"}
+```{r, fig.height = 2.75, fig.width = 3.75, fig.align = "center"}
 ggplot(virtual_prop_red_1000, aes(sample = prop_red)) +
   geom_qq() +
   geom_qq_line()
@@ -370,7 +368,7 @@ Use 1000 reps, or else `rep_sample_n()` can get a little hung up.
 
 We can calculate the population proportions the same way we did with our sample data, but using the entire `bowl` dataset.
 
-```{r, echo = FALSE, fig.height = 4.0}
+```{r, fig.height = 4.0}
 ggplot(bowl, aes(x = color, fill = color)) +
   geom_bar(color = "black") +
   scale_fill_manual(values = c("red", "white")) +

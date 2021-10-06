@@ -27,7 +27,7 @@ library(gridExtra)
 
 What proportion of the balls are red? We could count all of them (take a *census*), but that would be a long process.
 
-```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 7.1: A bowl filled with red and white balls.", out.width='600'}
+```{r echo = FALSE, fig.align = "center", fig.cap = "MD Figure 7.1: A bowl filled with red and white balls.", out.width='600'}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/0868c64eb2998fbe3e3bfccf7ff55e746341baf3/eeab1/images/sampling/balls/sampling_bowl_1.jpg")
 ```
 
@@ -36,7 +36,7 @@ knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/0868c64eb2998fbe3
 
 Instead of counting the entire population (*census*), we can select a random sample to use as an estimate.
 
-```{r echo=FALSE, fig.align="center", fig.cap="MD Figure 7.3: Removing 50 balls from the bowl.", out.width='600'}
+```{r echo = FALSE, fig.align = "center", fig.cap = "MD Figure 7.3: Removing 50 balls from the bowl.", out.width = '600'}
 knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/ee8292df457bd73d7a1a7d75c21be32d6e8659d6/30e62/images/sampling/balls/sampling_bowl_3_cropped.jpg")
 ```
 
@@ -70,7 +70,7 @@ The proportion of red balls in your sample is an *estimate* of the proportion of
 
 ```{r}
 virtual_shovel %>% 
-  mutate(is_red = (color == "red")) %>% 
+  mutate(is_red = color == "red") %>% 
   summarize(num_red  = sum(is_red),
             prop_red = mean(is_red))
 
@@ -208,7 +208,7 @@ ggplot(virtual_prop_red_1000, aes(x = prop_red)) +
 
 ### Taking *Larger* Samples
 
-TBA!!!
+What happens if you take samples of sizes smaller or larger than 50? Try it!!!
 
 
 ***
