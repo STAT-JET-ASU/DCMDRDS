@@ -81,6 +81,7 @@ knitr::include_graphics("images/tap-to-speak.gif")
 
 <p style = "font-size: 50%; text-align: center;">image source https://dribbble.com/shots/3613801-Tap-to-speak</p>
 
+
 ## What is the Shape?
 
 Visualize the shape of the distribution and check for outliers.
@@ -187,7 +188,7 @@ The BIG assumption: that our original sample is representative of the population
 
 Treat the sample as if it is the population.
 
-Repeatedly resample from it *with replacement*. (use same $n$)
+Repeatedly resample from it *with replacement*.
 
 Compute the relevant statistic from each resample.
 
@@ -260,7 +261,9 @@ ggplot(resampled_means, aes(x = mean_year)) +
 
 ```{r, echo = FALSE}
 resampled_means %>% 
-  summarize(resamples = n(), xbar = mean(mean_year), se = sd(mean_year)) %>% 
+  summarize(resamples = n(), 
+            xbar_resamplemeans = mean(mean_year), 
+            se_resamplemeans = sd(mean_year)) %>% 
   knitr::kable(digits = 2, align = rep("c", 3))
 ```
 
