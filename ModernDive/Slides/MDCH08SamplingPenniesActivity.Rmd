@@ -406,7 +406,7 @@ t.test(pennies_sample$year)$conf.int
 
 ## Bootstrap Percentile Interval
 
-Using the same logic as a traditional confidence interval, a Y% bootstrap percentile interval is based on the middle Y% percent of the sampling distribution. 
+Using the same logic as a traditional confidence interval, a Y% bootstrap percentile interval is based on the middle Y% percent of the bootstrap sampling distribution. 
 
 But, instead of using the normal distribution (CLT), we use the bootstrap (simulated) sampling distribution.
 
