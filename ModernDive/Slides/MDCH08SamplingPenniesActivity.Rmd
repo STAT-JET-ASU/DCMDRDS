@@ -1,5 +1,5 @@
 ---
-title: "Resampling Pennies #1<br>*Modern Dive* Chapter 8"
+title: "Resampling Pennies<br>*Modern Dive* Chapter 8"
 author: "Author: Jill E. Thomley"
 date: '`r format(Sys.time(), "%B %d, %Y @ %I:%M %p")`'
 output: 
@@ -19,11 +19,8 @@ These slides are not meant to be standalone information. You should take notes t
 **Related Materials**
 
 * Ch 5 of *Mathematical Statistics with Resampling and R, 2^nd^ Ed.*
-* Ch 7 of [*Modern Dive*](https://moderndive.com/7-sampling.html) (basis for this activity)
+* [Ch 8](https://moderndive.com/8-confidence-intervals.html) of *Modern Dive*
 * DataCamp [Sampling in R](https://learn.datacamp.com/courses/sampling-in-r)
-
-Refer to "[
-4.1 ioslides presentation](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html)" in [*R Markdown: The Definitive Guide*](https://bookdown.org/yihui/rmarkdown/) if you are interested in creating R Markdown slides.
 
 
 ## Packages
@@ -52,7 +49,8 @@ We will use `infer` to compute confidence intervals in a `tidy`, algorithmic way
 During the [Sampling Bowl Activity](https://stat-jet-asu.github.io/DCMDRDS/ModernDive/Slides/MDCH07SamplingBowlActivity.html#1) from Chapter 7 of Modern Dive, we sampled repeatedly from a population with a known proportion of red balls ($p$) versus white to understand how an *estimate* of the proportion of red balls ($\hat{p}$) taken from a sample can vary from sample to sample. We learned that:
 
 * taking ***more*** samples helps us better characterize the shape, center, and spread of the sampling distribution, regardless of the sample size; and
-* taking larger samples tends to decrease the variability of the statistic from sample to sample.
+
+* taking ***larger*** samples tends to decrease the variability of the statistic from sample to sample.
 
 In most real-life scenarios, we only get to take *one* sample and do not know the population value. How can we study sampling variability when we only have one sample to work with? 
 
@@ -124,7 +122,7 @@ pennies_sample %>% count(year) %>% arrange(year)
 
 ## Summaries of Years
 
-If the pennies in `pennies_sample` are representative sample of all US pennies in circulation in 2019, then the sample mean $\bar{x}$ is likely a decent estimate of the population mean $\mu$.
+If the pennies in `pennies_sample` are representative sample of all US pennies in circulation in 2019, then the sample mean $\bar{x}$ is an unbiased estimate of the population mean $\mu$.
 
 ```{r, echo = FALSE}
 pennies_sample %>% 
@@ -171,17 +169,15 @@ Now we can use computational methods like *bootstrapping* to develop interval es
 
 ## The Bootstrap Idea
 
-What is our "existing resource"? It's the one sample we have.
+What is our "existing resource" here? It is the one sample we have.
 
 From Chapter 5 of *Mathematical Statistics with Resampling and R, 2^nd^ Ed.* (p. 104)
 
-*"The original sample approximates the population from which it was drawn. So, resamples from this sample approximate what we would get if we took many samples from the population. The bootstrap distribution of a statistic, based on many resamples, approximates the sampling distribution of the statistic, based on many samples." *
+*"The original sample approximates the population from which it was drawn. So, resamples from this sample approximate what we would get if we took many samples from the population. The bootstrap distribution of a statistic, based on many resamples, approximates the sampling distribution of the statistic, based on many samples."*
 
 <hr>
 
 The BIG assumption: that our original sample is representative of the population. 
-
-<hr>
 
 
 ## Bootstrap Resampling
@@ -233,7 +229,7 @@ ggplot(pennies_resamples, aes(x = year)) +
 
 ## Sample Mean of Each Resample
 
-We compute the sample mean $\bar{x}$ from each of the resamples.
+We compute the sample mean $\bar{x}$ from each of the resamples and use them to approximate the sampling distribution of $\bar{x}$.
 
 ```{r, echo = FALSE}
 resampled_means <- pennies_resamples %>% 
@@ -369,7 +365,9 @@ ggplot(virtual_resampled_means, aes(x = mean_year)) +
 
 ```{r, echo = FALSE}
 virtual_resampled_means %>% 
-  summarize(resamples = n(), xbar = mean(mean_year), se = sd(mean_year)) %>% 
+  summarize(resamples = n(), 
+            xbar_resamplemeans = mean(mean_year), 
+            se_resamplemeans = sd(mean_year)) %>% 
   knitr::kable(digits = 2, align = rep("c", 3))
 ```
 
@@ -387,6 +385,137 @@ ggplot(virtual_resampled_means, aes(sample = mean_year)) +
        x = "theoretical normal quantiles",
        y = "sample quantiles") +
   theme_linedraw()
+```
+
+
+## Recap: Traditional Confidence Interval
+
+If we feel the assumptions for a traditional confidence interval for $\bar{x}$ are met, we could compute it from the original sample.
+
+Assumptions:
+
+* random (i.i.d.) sample from the population
+* sample is less than 10% of the population
+* the data appear normally distributed, or...
+* $n \ge 30$ with no significant outliers (CLT)
+
+```{r}
+t.test(pennies_sample$year)$conf.int
+```
+
+
+## Bootstrap Percentile Interval
+
+Using the same logic as a traditional confidence interval, a Y% bootstrap percentile interval is based on the middle Y% percent of the sampling distribution. 
+
+But, instead of using the normal distribution (CLT), we use the bootstrap (simulated) sampling distribution.
+
+```{r}
+quantile(virtual_resampled_means$mean_year, c(0.025, 0.975))
+```
+
+I am 95% confident that the true mean mint year $\mu$ is between the two percentile values given above.
+
+
+## Bootstrap SE Interval
+
+If the bootstrap distribution appears approximately normal, we can use the bootstrap standard error in place of the theoretical standard error in the traditional confidence interval formula.
+
+$$\bar{x}_{\text{original sample}} \pm z* SE_{\text{bootstrap distribution}}$$
+
+```{r}
+z <- 1.96
+
+mean(pennies_sample$year) + 
+  c(-1, +1) * z * sd(virtual_resampled_means$mean_year)
+```
+
+I am 95% confident that the true mean mint year $\mu$ is between the two values given above.
+
+
+## Using the infer Package
+
+The infer package contains pre-built functions that convert the steps we performed into a predictable workflow for estimation and (later) inference.
+
+**Summarizing the Statistic in Original Sample**
+
+```{r}
+x_bar <- pennies_sample %>%    # which dataset?
+  specify(response = year) %>% # which variable?
+  calculate(stat = "mean")     # which statistic?
+x_bar
+```
+
+
+##
+
+**Bootstrap Resampling from the Original Sample**
+
+We do not have to specify sample size, the `generate` function calculates that from the specified variable. The default type of generation is `bootstrap`, so we can leave that out if we wish.
+
+```{r}
+pennies_sample %>% 
+  specify(response = year) %>% 
+  generate(reps = 1000, type = "bootstrap") # what type of sampling?
+```
+
+
+##
+
+**Calculate the Statistic from the Resamples**
+
+```{r}
+bootstrap_distribution <- pennies_sample %>% 
+  specify(response = year) %>% 
+  generate(reps = 1000) %>% 
+  calculate(stat = "mean") # distribution of what statistic?
+bootstrap_distribution
+```
+
+
+##
+
+**Visualize the Sampling Distribution**
+
+```{r}
+visualize(bootstrap_distribution)
+```
+
+
+##
+
+**Calculating the Intervals**
+
+```{r}
+percentile_ci <- bootstrap_distribution %>% 
+  get_confidence_interval(level = 0.95, type = "percentile")
+percentile_ci
+```
+
+```{r}
+standard_error_ci <- bootstrap_distribution %>% 
+  get_confidence_interval(type = "se", point_estimate = x_bar)
+standard_error_ci
+```
+
+
+##
+
+**Visualizing the Percentile Interval**
+
+```{r}
+visualize(bootstrap_distribution) + 
+  shade_confidence_interval(endpoints = percentile_ci)
+```
+
+
+##
+
+**Visualizing the SE Interval**
+
+```{r}
+visualize(bootstrap_distribution) + 
+  shade_confidence_interval(endpoints = standard_error_ci)
 ```
 
 
@@ -428,3 +557,5 @@ virtual_resampled_means %>%
   summarize(resamples = n(), xbar = mean(mean_year), se = sd(mean_year)) %>% 
   knitr::kable(digits = 2, align = rep("c", 3))
 ```
+
+
