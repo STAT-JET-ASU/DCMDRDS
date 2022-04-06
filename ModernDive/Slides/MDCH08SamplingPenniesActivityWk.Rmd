@@ -138,7 +138,6 @@ my_virtual_resample
 
 ```
 
-
 ### Taking More Samples!
 
 #### Take 1000 Resamples of Size 50
@@ -174,6 +173,26 @@ What is the shape, center, and spread (variability) of the resampled means?
 ```
 
 ##### Mean and Standard Error
+
+```{r}
+
+```
+
+### Computing Interval Estimates
+
+#### Traditional Confidence Interval
+
+```{r}
+
+```
+
+#### Bootstrap Percentile Interval
+
+```{r}
+
+```
+
+#### Bootstrap SE Interval
 
 ```{r}
 
